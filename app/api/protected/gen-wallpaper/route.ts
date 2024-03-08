@@ -61,13 +61,16 @@ export async function POST(req: Request) {
       return respErr("generate wallpaper failed");
     }
 
+    console.log("img gen success", raw_img_url);
+
     const img_name = encodeURIComponent(description);
     const s3_img = await downloadAndUploadImage(
       raw_img_url,
-      process.env.AWS_BUCKET || "trysai",
+      process.env.AWS_BUCKET || "",
       `wallpapers/${img_name}.png`
     );
-    const img_url = s3_img.Location;
+
+    const img_url = s3_img.Location || "";
 
     const wallpaper: Wallpaper = {
       user_email: user_email,

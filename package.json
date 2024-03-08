@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.529.1",
+    "@aws-sdk/lib-storage": "^3.529.1",
     "@clerk/nextjs": "^4.29.1",
     "@heroicons/react": "^2.1.1",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -16,11 +18,13 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
     "@stripe/stripe-js": "^2.3.0",
-    "aws-sdk": "^2.1531.0",
     "axios": "^1.6.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "dotenv-flow": "^4.1.0",
+    "https-proxy-agent": "^7.0.4",
     "lucide-react": "^0.307.0",
+    "mime-types": "^2.1.35",
     "next": "14.0.4",
     "openai": "^4.24.1",
     "pg": "^8.11.3",
@@ -36,6 +40,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@types/mime-types": "^2.1.4",
     "@types/node": "^20",
     "@types/pg": "^8.10.9",
     "@types/react": "^18",

@@ -65,7 +65,7 @@ export default function () {
                       <User user={user} />
                     </>
                   ) : (
-                    <a className="cursor-pointer" href="/si">
+                    <a className="cursor-pointer" href="/sign-in">
                       <Button>Sign In</Button>
                     </a>
                   )}

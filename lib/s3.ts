@@ -1,14 +1,16 @@
-import AWS from "aws-sdk";
-import { Readable } from "stream";
-import axios from "axios";
 import fs from "fs";
+import { S3Client } from "@aws-sdk/client-s3";
+import { Upload } from "@aws-sdk/lib-storage";
+import mime from "mime-types";
+import axios from "axios";
 
-AWS.config.update({
-  accessKeyId: process.env.AWS_AK,
-  secretAccessKey: process.env.AWS_SK,
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_AK || "",
+    secretAccessKey: process.env.AWS_SK || "",
+  },
 });
-
-const s3 = new AWS.S3();
 
 export async function downloadAndUploadImage(
   imageUrl: string,
@@ -22,13 +24,19 @@ export async function downloadAndUploadImage(
       responseType: "stream",
     });
 
-    const uploadParams = {
-      Bucket: bucketName,
-      Key: s3Key,
-      Body: response.data as Readable,
-    };
+    console.log(`uploading img to s3: ${s3Key}`);
+    const upload = new Upload({
+      client: s3,
+      params: {
+        Bucket: bucketName,
+        Key: s3Key,
+        Body: response.data,
+        ACL: "public-read",
+        ContentType: mime.lookup(s3Key) || undefined,
+      },
+    });
 
-    return s3.upload(uploadParams).promise();
+    return upload.done();
   } catch (e) {
     console.log("upload failed:", e);
     throw e;
