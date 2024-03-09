@@ -13,13 +13,13 @@ import {
 import { AppContext } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Wallpaper } from "@/types/wallpaper";
+import { Poetry } from "@/types/Poetry";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 interface Props {
-  wallpapers: Wallpaper[];
-  setWallpapers: Dispatch<SetStateAction<Wallpaper[]>>;
+  wallpapers: Poetry[];
+  setWallpapers: Dispatch<SetStateAction<Poetry[]>>;
 }
 
 export default function ({ setWallpapers }: Props) {
@@ -28,7 +28,7 @@ export default function ({ setWallpapers }: Props) {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [wallpaper, setWallpaper] = useState<Wallpaper | null>(null);
+  const [wallpaper, setWallpaper] = useState<Poetry | null>(null);
   const router = useRouter();
 
   const requestGenWallpaper = async function () {
@@ -63,12 +63,9 @@ export default function ({ setWallpapers }: Props) {
 
           setDescription("");
 
-          const wallpaper: Wallpaper = data;
+          const wallpaper: Poetry = data;
           setWallpaper(wallpaper);
-          setWallpapers((wallpapers: Wallpaper[]) => [
-            wallpaper,
-            ...wallpapers,
-          ]);
+          setWallpapers((wallpapers: Poetry[]) => [wallpaper, ...wallpapers]);
 
           toast.success("gen wallpaper ok");
           return;

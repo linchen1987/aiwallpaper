@@ -5,14 +5,14 @@ import { useContext, useEffect, useState } from "react";
 import Hero from "@/components/hero";
 import Input from "@/components/input";
 import Producthunt from "@/components/producthunt";
-import { Wallpaper } from "@/types/wallpaper";
+import { Poetry } from "@/types/poetry";
 import Wallpapers from "@/components/wallpapers";
 import { toast } from "sonner";
 import { AppContext } from "@/contexts/AppContext";
 
 export default function () {
   const { user } = useContext(AppContext);
-  const [wallpapers, setWallpapers] = useState<Wallpaper[]>([]);
+  const [wallpapers, setWallpapers] = useState<Poetry[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchWallpapers = async function (page: number) {
@@ -34,6 +34,12 @@ export default function () {
         const res = await resp.json();
         console.log("get wallpapers result: ", res);
         if (res.data) {
+          (res.data || []).forEach((x: any) => {
+            x.poetry_text = x.poetry_text
+              .split("，")
+              .join("，\n")
+              .replace(/\n+/g, "\n");
+          });
           setWallpapers(res.data);
           return;
         }

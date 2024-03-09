@@ -1,13 +1,11 @@
 import { respData, respErr } from "@/lib/resp";
 
-import { ImageGenerateParams } from "openai/resources/images.mjs";
 import { User } from "@/types/user";
-import { Wallpaper } from "@/types/wallpaper";
+import { Poetry } from "@/types/poetry";
 import { currentUser } from "@clerk/nextjs";
-import { downloadAndUploadImage } from "@/lib/s3";
 import { getOpenAIClient } from "@/services/openai";
 import { getUserCredits } from "@/services/order";
-import { insertWallpaper } from "@/models/wallpaper";
+import { insertPoetry } from "@/models/poetry";
 import { saveUser } from "@/services/user";
 
 export async function POST(req: Request) {
@@ -41,49 +39,49 @@ export async function POST(req: Request) {
       return respErr("credits not enough");
     }
 
-    const llm_name = "dall-e-3";
-    const img_size = "1792x1024";
-    const llm_params: ImageGenerateParams = {
-      prompt: `generate desktop wallpaper image about ${description}`,
-      model: llm_name,
-      n: 1,
-      quality: "hd",
-      response_format: "url",
-      size: img_size,
-      style: "vivid",
-    };
+    const llm_name = "gpt-3.5-turbo-0125";
     const created_at = new Date().toISOString();
 
-    const res = await client.images.generate(llm_params);
+    const prompt = `
+你是一个当代诗人，根据输入提示写一首诗：
+格式：
+{第一句}
+{第二句}
+{第三句}
+{第四句}`;
 
-    const raw_img_url = res.data[0].url;
-    if (!raw_img_url) {
-      return respErr("generate wallpaper failed");
+    const res = await client.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: prompt,
+        },
+        {
+          role: "user",
+          content: description,
+        },
+      ],
+      model: llm_name,
+    });
+
+    const poetry_text = res.choices[0].message.content;
+    if (!poetry_text) {
+      return respErr("generate poetry failed");
     }
 
-    console.log("img gen success", raw_img_url);
+    console.log("poetry gen success", poetry_text);
 
-    const img_name = encodeURIComponent(description);
-    const s3_img = await downloadAndUploadImage(
-      raw_img_url,
-      process.env.AWS_BUCKET || "",
-      `wallpapers/${img_name}.png`
-    );
-
-    const img_url = s3_img.Location || "";
-
-    const wallpaper: Wallpaper = {
+    const poetry: Poetry = {
       user_email: user_email,
-      img_description: description,
-      img_size: img_size,
-      img_url: img_url,
+      poetry_description: description,
+      poetry_text,
       llm_name: llm_name,
-      llm_params: JSON.stringify(llm_params),
+      llm_params: JSON.stringify({}),
       created_at: created_at,
     };
-    await insertWallpaper(wallpaper);
+    await insertPoetry(poetry);
 
-    return respData(wallpaper);
+    return respData(poetry);
   } catch (e) {
     console.log("generate wallpaper failed: ", e);
     return respErr("generate wallpaper failed");

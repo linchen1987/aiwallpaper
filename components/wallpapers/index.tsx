@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { FaDownload } from "react-icons/fa";
 import Image from "next/image";
-import { Wallpaper } from "@/types/wallpaper";
+import { Poetry } from "@/types/poetry";
 import { toast } from "sonner";
 
 interface Props {
-  wallpapers: Wallpaper[] | null;
+  wallpapers: Poetry[] | null;
   loading: boolean;
 }
 
@@ -26,30 +26,50 @@ export default function ({ wallpapers, loading }: Props) {
             ) : (
               <>
                 {wallpapers &&
-                  wallpapers.map((wallpaper: Wallpaper, idx: number) => {
+                  wallpapers.map((wallpaper: Poetry, idx: number) => {
                     return (
                       <div
                         key={idx}
                         className="rounded-xl overflow-hidden mb-4 inline-block border border-solid border-[#cdcdcd] md:mb-8 lg:mb-10"
                       >
-                        <Image
+                        {/* <Image
                           src={wallpaper.img_url}
                           alt={wallpaper.img_description}
                           width={350}
                           height={200}
                           loading="lazy"
-                        />
+                        /> */}
+                        <p className="whitespace-pre text-center text-xl pt-4 tracking-wide">
+                          {wallpaper.poetry_text}
+                        </p>
 
                         <div className="px-5 py-8 sm:px-6">
                           <p className="flex-col text-[#808080]">
-                            {wallpaper.img_description}
+                            {wallpaper.poetry_description}
                           </p>
                           <div className="flex items-center mb-5 mt-6 flex-wrap gap-2 md:mb-6 lg:mb-8">
-                            <Badge variant="secondary">
+                            {/* <Badge variant="secondary">
                               {wallpaper.img_size}
-                            </Badge>
+                            </Badge> */}
 
                             <div className="flex-1"></div>
+                            {/* <Avatar>
+                              <AvatarImage
+                                src={wallpaper.created_user?.avatar_url}
+                                alt={wallpaper.created_user?.nickname}
+                              />
+                              <AvatarFallback>
+                                {wallpaper.created_user?.nickname}
+                              </AvatarFallback>
+                            </Avatar> */}
+                          </div>
+                          <div className="flex flex-wrap items-center justify-between gap-4">
+                            {/* <a className="flex items-center max-w-full gap-2.5 text-sm font-bold uppercase text-black">
+                              <p>Download</p>
+                              <p className="text-sm">
+                                <FaDownload />
+                              </p>
+                            </a> */}
                             <Avatar>
                               <AvatarImage
                                 src={wallpaper.created_user?.avatar_url}
@@ -59,19 +79,8 @@ export default function ({ wallpapers, loading }: Props) {
                                 {wallpaper.created_user?.nickname}
                               </AvatarFallback>
                             </Avatar>
-                          </div>
-                          <div className="flex flex-wrap items-center justify-between gap-4">
-                            <a
-                              href={wallpaper.img_url}
-                              className="flex items-center max-w-full gap-2.5 text-sm font-bold uppercase text-black"
-                            >
-                              <p>Download</p>
-                              <p className="text-sm">
-                                <FaDownload />
-                              </p>
-                            </a>
                             <CopyToClipboard
-                              text={wallpaper.img_description}
+                              text={wallpaper.poetry_description}
                               onCopy={() => toast.success("Copied")}
                             >
                               <Button>Copy Prompt</Button>

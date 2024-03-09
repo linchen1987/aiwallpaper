@@ -1,15 +1,15 @@
 import { respData, respErr } from "@/lib/resp";
 
-import { getWallpapers } from "@/models/wallpaper";
+import { getPoetries } from "@/models/poetry";
 
 export async function POST(req: Request) {
   try {
     const { page } = await req.json();
-    const wallpapers = await getWallpapers(page || 1, 100);
+    const poetries = await getPoetries(page || 1, 100);
 
-    return respData(wallpapers);
+    return respData(poetries);
   } catch (e) {
-    console.log("get wallpapers failed: ", e);
-    return respErr("get wallpapers failed");
+    console.log("get poetries failed: ", e);
+    return respErr("get poetries failed");
   }
 }
